@@ -239,11 +239,11 @@ def update_graph(hoverData, selectedData,
     
     return {
         'data': [go.Scatter(
-        x=dff2[dff2["GEO"]==hoverData['points'][0]['customdata']]['TIME'],
-        y=dff2[dff2["GEO"]==hoverData['points'][0]['customdata']]['Value'],
-        text=dff2[dff2["GEO"]==hoverData['points'][0]['customdata']]['TIME'],
+        x=dff2[dff2["GEO"]==selectedData['points'][0]['customdata']]['TIME'],
+        y=dff2[dff2["GEO"]==selectedData['points'][0]['customdata']]['Value'],
+        text=dff2[dff2["GEO"]==selectedData['points'][0]['customdata']]['TIME'],
         mode='line',
-        name=hoverData['points'][0]['customdata']
+        name=selectedData['points'][0]['customdata']
         )],
         'layout': go.Layout(
             xaxis={
