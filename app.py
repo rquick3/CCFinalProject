@@ -1,44 +1,19 @@
 
-# coding: utf-8
-
-# In[1]:
-
 # Import of Packages
 import pandas as pd
-import itertools
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
-import requests
-import json
 import numpy as np
-from pandas.io.json import json_normalize
 
-
-# In[2]:
-
-# Import of data
+# Import of data and some minor cleaning
 data = pd.read_csv("https://raw.githubusercontent.com/rquick3/CCFinalProject/master/nama10gdp1Data.csv", na_values=":")
-
-
-# In[3]:
-
 del data["Flag and Footnotes"]
-
-
-# In[4]:
-
-#r = requests.get('http://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/en/nama_10_gdp?precision=1&na_item=B1G&na_item=B1GQ&na_item=D21&na_item=D21X31&na_item=D31&na_item=P3&na_item=P31_S13&na_item=P31_S14&na_item=P31_S14_S15&na_item=P31_S15&na_item=P32_S13&na_item=P3_P5&na_item=P3_P6&na_item=P3_S13&na_item=P41&na_item=P51G&na_item=P5G&na_item=P6&na_item=P61&na_item=P62&na_item=P7&na_item=P71&na_item=P72&na_item=P52_P53&na_item=B11&na_item=B111&na_item=B112&na_item=B2A3G&na_item=D1&na_item=D11&na_item=D12&na_item=D2&na_item=D2X3&na_item=D3&na_item=P52&na_item=P53&na_item=YA0&na_item=YA1&na_item=YA2&unit=CP_MEUR')
-#x = r.json()
-#df = pd.DataFrame(x)
-#print(df)
-
-
-# In[5]:
-
 df = data.dropna()
+
+# Set dropdown menues and categories
 available_indicators = df['NA_ITEM'].unique()
 unit_indicators = df["UNIT"].unique()
 geo_indicators = df["GEO"].unique()
@@ -46,23 +21,22 @@ geo_indicators_euro = ['European Union (28 countries)', 'European Union (15 coun
        'Euro area (EA11-2000, EA12-2006, EA13-2007, EA15-2008, EA16-2010, EA17-2013, EA18-2014, EA19)',
        'Euro area (19 countries)', 'Euro area (18 countries)',
        'Euro area (12 countries)']
-
 df['GEO_CAT'] = np.where(df['GEO'].isin(geo_indicators_euro), 'Europe Indicators', 'Country Indicators')
 
+# Set default value for right graph
+selected_values = ["Spain"]
 
-
-# In[18]:
-
+# Code of the app
 app = dash.Dash(__name__)
 server = app.server
 app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"})
-#Create List of Indicators for Dropdown Menu
+
 
 app.layout = html.Div([
     
     # Selection of Units (affects both graphs)
     html.Div
-    ([
+    ([	html.Label('Measurement Unit'),
         dcc.Dropdown
         (
             id='unit',
@@ -78,7 +52,7 @@ app.layout = html.Div([
     ([
         #Dropdown Menu for x-axis Indicator of graph 1
         html.Div
-        ([
+        ([	html.Label('Indicator on X-Axis'),
             dcc.Dropdown
             (
                 id='xaxis-column',
@@ -87,12 +61,12 @@ app.layout = html.Div([
             ),
         ],
             # Style attribute for Dropdown menu for x-axis indicaotr of graph 1
-            style={'width': '49%', 'display': 'inline-block'}
+            style={'width': '98%', 'display': 'inline-block'}
         ),
         
         #Dropdown Menu for y-axis indicator of graph 1
         html.Div
-        ([
+        ([	html.Label('Indicator on Y-axis'),
             dcc.Dropdown
             (
                 id='yaxis-column',
@@ -101,17 +75,18 @@ app.layout = html.Div([
             ),
         ],
             # Style attribute for Dropdown menu for y-axis indicaotr of graph 1
-            style={'width': '49%', 'float': 'right', 'display': 'inline-block'}
+            style={'width': '98%', 'display': 'inline-block', "margin-bottom": "30px"}
         ),
     
         # Graph 1
+        html.Label('Click data to add to right graph', style={"align":"center"}),
         dcc.Graph(id='indicator-graphic_1',
-        hoverData={'points': [{'customdata': 'Spain'}]},
+        #hoverData={'points': [{'customdata': 'Spain'}]}, <- remainder of old code (can be easily redeployed if needed)
         clickData={'points': [{'customdata': 'Spain'}]}),
     
         #Slider beneath graph 1
         html.Div
-        ([
+        ([	html.Label('Select Year'),
             dcc.Slider
             (
                 id='year--slider',
@@ -128,7 +103,7 @@ app.layout = html.Div([
     ],
         
         # Style attribute for container of graph 1
-        style={'width': '48%', 'display': 'inline-block'}
+        style={'width': '47%', "float":"left", 'display': 'inline-block'}
    
     ),
     
@@ -141,22 +116,22 @@ app.layout = html.Div([
         #Dropdown Menu for country indicator of graph 2
         html.Div
         (
-            [
+            [	html.Label('Countries'),
                 dcc.Dropdown(
                 id='country',
                 options=[{'label': i, 'value': i} for i in geo_indicators],
-                value="Spain",
-                multi = True
+                multi = True,
+                value=[]
                 ),
             ],
             # Style attribute for Dropdown menu for country indicaotr of graph 2
-            style={'width': '48%', 'display': 'inline-block'}
+            style={'width': '98%', 'display': 'inline-block'}
         ),
         
         #Dropdown Menu for y-axis indicator of graph 2
         html.Div
         (
-            [
+            [	html.Label('Indicator on Y-Axis'),
                 dcc.Dropdown(
                 id='yaxis-column_graph2',
                 options=[{'label': i, 'value': i} for i in available_indicators],
@@ -164,20 +139,28 @@ app.layout = html.Div([
                 ),
             ],
             # Style attribute for Dropdown menu for y-axis indicaotr of graph 2
-            style={'width': '48%', 'display': 'inline-block'}
+            style={'width': '98%', 'display': 'inline-block', "margin-bottom": "30px"}
         ),
         
-        # Graph 1
+        # Graph 2
         dcc.Graph(id='indicator-graphic_2')],
     
         # Style attribute for container of graph 2
-        style={'width': '48%', 'display': 'inline-block'}
+        style={'width': '47%', 'display': 'inline-block'}
     
     ),
 ])
 
 
+# This callback links the left graph's click data to the country dropdown menu
+@app.callback(dash.dependencies.Output('country', 'value'),
+			[dash.dependencies.Input('indicator-graphic_1', 'clickData')])
 
+def update_graph(clickData):
+	selected_values.append(clickData['points'][0]['customdata'])
+	return selected_values
+
+#This callback updates the left graph
 @app.callback(
     dash.dependencies.Output('indicator-graphic_1', 'figure'),
     [dash.dependencies.Input('unit', 'value'),
@@ -185,6 +168,7 @@ app.layout = html.Div([
      dash.dependencies.Input('yaxis-column', 'value'),
      dash.dependencies.Input('year--slider', 'value')])
 
+	
 def update_graph(unit_name, xaxis_column_name, yaxis_column_name,
                  year_value):
     dff = df[df['TIME'] == year_value][df["UNIT"] == unit_name]
@@ -220,28 +204,35 @@ def update_graph(unit_name, xaxis_column_name, yaxis_column_name,
         )
     }
 
+# This callback updates the right graph
 @app.callback(
     dash.dependencies.Output('indicator-graphic_2', 'figure'),
-    [dash.dependencies.Input('indicator-graphic_1', 'hoverData'),
-     dash.dependencies.Input('indicator-graphic_1', 'clickData'),
+    [#dash.dependencies.Input('indicator-graphic_1', 'hoverData'), <- remainder of old code (can be easily redeployed if needed)
+     #dash.dependencies.Input('indicator-graphic_1', 'clickData'), <- remainder of old code (can be easily redeployed if needed)
      dash.dependencies.Input('country', 'value'),
      dash.dependencies.Input('unit', 'value'),
      dash.dependencies.Input('yaxis-column_graph2', 'value')])
 
-def update_graph(hoverData, clickData, country,
+def update_graph(#hoverData, clickData, <- remainder of old code (can be easily redeployed if needed)
+	country,
     unit_name, yaxis_column_name):
-    country_name_list = []
-    country_name_list.append(clickData['points'][0]['customdata'])
-    country_name_list.append(country)
+    
+    # resetting the selected values to what is currently displayed in the dropdown
+    global selected_values
+    selected_values = country
+	
+	# Filtering the dataframe
     dff2 = df[df["UNIT"] == unit_name][df['NA_ITEM'] == yaxis_column_name]
+    
+    # Setting up one trace for each country selected
     traces = []
-    for country in country_name_list:
+    for country_element in selected_values:
     	traces.append(go.Scatter(
-        	x=dff2[dff2["GEO"]==country]['TIME'],
-        	y=dff2[dff2["GEO"]==country]['Value'],
-        	text=dff2[dff2["GEO"]==country]]['TIME'],
+        	x=dff2[dff2["GEO"]==country_element]['TIME'],
+        	y=dff2[dff2["GEO"]==country_element]['Value'],
+        	text=dff2[dff2["GEO"]==country_element]['TIME'],
         	mode='line',
-        	name=country
+        	name=country_element
         	))
     
     return {
@@ -264,9 +255,6 @@ def update_graph(hoverData, clickData, country,
 
 if __name__ == '__main__':
     app.run_server()
-
-
-# In[ ]:
 
 
 
