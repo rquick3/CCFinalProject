@@ -53,7 +53,7 @@ df['GEO_CAT'] = np.where(df['GEO'].isin(geo_indicators_euro), 'Europe Indicators
 
 # In[18]:
 
-app = dash.Dash(_name_)
+app = dash.Dash(__name__)
 server = app.server
 app.css.append_css({"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"})
 #Create List of Indicators for Dropdown Menu
