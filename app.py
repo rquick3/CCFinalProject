@@ -20,7 +20,7 @@ from pandas.io.json import json_normalize
 # In[2]:
 
 # Import of data
-data = pd.read_csv("CCFinalProject/nama_10_gdp_1_Data.csv", na_values=":")
+data = pd.read_csv("nama10gdp1Data.csv", na_values=":")
 
 
 # In[3]:
