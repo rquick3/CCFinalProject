@@ -106,7 +106,8 @@ app.layout = html.Div([
     
         # Graph 1
         dcc.Graph(id='indicator-graphic_1',
-        hoverData={'points': [{'customdata': 'Spain'}]}),
+        hoverData={'points': [{'customdata': 'Spain'}]},
+        clickData={'points': [{'customdata': 'Spain'}]}),
     
         #Slider beneath graph 1
         html.Div
@@ -141,15 +142,15 @@ app.layout = html.Div([
         html.Div
         (
             [
-#                dcc.Dropdown(
-#                id='country',
-#                options=[{'label': i, 'value': i} for i in geo_indicators],
-#                value="Spain",
-#                multi = True
-#                ),
+                dcc.Dropdown(
+                id='country',
+                options=[{'label': i, 'value': i} for i in geo_indicators],
+                value="Spain",
+                multi = True
+                ),
             ],
             # Style attribute for Dropdown menu for country indicaotr of graph 2
-            style={'width': '10%', 'display': 'inline-block'}
+            style={'width': '48%', 'display': 'inline-block'}
         ),
         
         #Dropdown Menu for y-axis indicator of graph 2
@@ -163,14 +164,11 @@ app.layout = html.Div([
                 ),
             ],
             # Style attribute for Dropdown menu for y-axis indicaotr of graph 2
-            style={'width': '88%', 'display': 'inline-block'}
+            style={'width': '48%', 'display': 'inline-block'}
         ),
         
         # Graph 1
-        dcc.Graph(id='indicator-graphic_2',
-                clickData={'points': [{'customdata': 'Spain'}]},
-                hoverData={'points': [{'customdata': 'Spain'}]}
-                 )],
+        dcc.Graph(id='indicator-graphic_2')],
     
         # Style attribute for container of graph 2
         style={'width': '48%', 'display': 'inline-block'}
@@ -226,25 +224,28 @@ def update_graph(unit_name, xaxis_column_name, yaxis_column_name,
     dash.dependencies.Output('indicator-graphic_2', 'figure'),
     [dash.dependencies.Input('indicator-graphic_1', 'hoverData'),
      dash.dependencies.Input('indicator-graphic_1', 'clickData'),
+     dash.dependencies.Input('country', 'value'),
      dash.dependencies.Input('unit', 'value'),
      dash.dependencies.Input('yaxis-column_graph2', 'value')])
 
-def update_graph(hoverData, selectedData,
+def update_graph(hoverData, clickData, country
     unit_name, yaxis_column_name):
-    #country_name_list = []
-    #country_name_list.append()
+    country_name_list = []
+    country_name_list.append(clickData['points'][0]['customdata'])
+    country_name_list.append(country)
     dff2 = df[df["UNIT"] == unit_name][df['NA_ITEM'] == yaxis_column_name]
-    #traces = []
-    
+    traces = []
+    for country in country_name_list:
+    	traces.append(go.Scatter(
+        	x=dff2[dff2["GEO"]==country]['TIME'],
+        	y=dff2[dff2["GEO"]==country]['Value'],
+        	text=dff2[dff2["GEO"]==country]]['TIME'],
+        	mode='line',
+        	name=country
+        	))
     
     return {
-        'data': [go.Scatter(
-        x=dff2[dff2["GEO"]==selectedData['points'][0]['customdata']]['TIME'],
-        y=dff2[dff2["GEO"]==selectedData['points'][0]['customdata']]['Value'],
-        text=dff2[dff2["GEO"]==selectedData['points'][0]['customdata']]['TIME'],
-        mode='line',
-        name=selectedData['points'][0]['customdata']
-        )],
+        'data': [trace for trace in traces],
         'layout': go.Layout(
             xaxis={
                 'title': "Years",
