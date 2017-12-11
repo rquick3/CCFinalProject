@@ -228,7 +228,7 @@ def update_graph(unit_name, xaxis_column_name, yaxis_column_name,
      dash.dependencies.Input('unit', 'value'),
      dash.dependencies.Input('yaxis-column_graph2', 'value')])
 
-def update_graph(hoverData, clickData, country
+def update_graph(hoverData, clickData, country,
     unit_name, yaxis_column_name):
     country_name_list = []
     country_name_list.append(clickData['points'][0]['customdata'])
