@@ -36,7 +36,7 @@ app.layout = html.Div([
     
     # Selection of Units (affects both graphs)
     html.Div
-    ([	html.Label('Measurement Unit'),
+    ([	html.Label('Measurement Unit (used for both graphs)'),
         dcc.Dropdown
         (
             id='unit',
@@ -44,7 +44,7 @@ app.layout = html.Div([
             value='Chain linked volumes, index 2010=100'
         ),
     ],
-        style={'width': '100%', 'display': 'inline-block'}
+        style={'width': '100%', 'display': 'inline-block', "margin-bottom":"20px"}
     ),
     
     # Container for the first graph
@@ -52,7 +52,7 @@ app.layout = html.Div([
     ([
         #Dropdown Menu for x-axis Indicator of graph 1
         html.Div
-        ([	html.Label('Indicator on X-Axis'),
+        ([	html.Label('Indicator on X-Axis (for scatter plot)'),
             dcc.Dropdown
             (
                 id='xaxis-column',
@@ -66,7 +66,7 @@ app.layout = html.Div([
         
         #Dropdown Menu for y-axis indicator of graph 1
         html.Div
-        ([	html.Label('Indicator on Y-axis'),
+        ([	html.Label('Indicator on Y-axis (for scatter plot)'),
             dcc.Dropdown
             (
                 id='yaxis-column',
@@ -79,7 +79,7 @@ app.layout = html.Div([
         ),
     
         # Graph 1
-        html.Label('Click data to add to right graph', style={"align":"center"}),
+        html.Label('Scatter Plot (click data to add country to right graph)', style={"align":"center"}),
         dcc.Graph(id='indicator-graphic_1',
         #hoverData={'points': [{'customdata': 'Spain'}]}, <- remainder of old code (can be easily redeployed if needed)
         clickData={'points': [{'customdata': 'Spain'}]}),
@@ -116,7 +116,7 @@ app.layout = html.Div([
         #Dropdown Menu for country indicator of graph 2
         html.Div
         (
-            [	html.Label('Countries'),
+            [	html.Label('Countries (for line graph, multiple selection possible)'),
                 dcc.Dropdown(
                 id='country',
                 options=[{'label': i, 'value': i} for i in geo_indicators],
@@ -131,7 +131,7 @@ app.layout = html.Div([
         #Dropdown Menu for y-axis indicator of graph 2
         html.Div
         (
-            [	html.Label('Indicator on Y-Axis'),
+            [	html.Label('Indicator on Y-Axis (for line graph)'),
                 dcc.Dropdown(
                 id='yaxis-column_graph2',
                 options=[{'label': i, 'value': i} for i in available_indicators],
@@ -143,6 +143,7 @@ app.layout = html.Div([
         ),
         
         # Graph 2
+        html.Label('Line Graph', style={"text-align":"center"}),
         dcc.Graph(id='indicator-graphic_2')],
     
         # Style attribute for container of graph 2
