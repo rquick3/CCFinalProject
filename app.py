@@ -79,7 +79,7 @@ app.layout = html.Div([
         ),
     
         # Graph 1
-        html.Label('Scatter Plot (click data to add country to right graph)', style={"align":"center"}),
+        html.Label('Scatter Plot /n (click data to add country to right graph)', style={"text-align":"center"}),
         dcc.Graph(id='indicator-graphic_1',
         #hoverData={'points': [{'customdata': 'Spain'}]}, <- remainder of old code (can be easily redeployed if needed)
         clickData={'points': [{'customdata': 'Spain'}]}),
