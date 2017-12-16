@@ -47,7 +47,7 @@ app.layout = html.Div([
         style={'width': '100%', 'display': 'inline-block', "margin-bottom":"20px"}
     ),
     
-    # Container for the first graph
+    # Div for the first graph
     html.Div
     ([
         #Dropdown Menu for x-axis Indicator of graph 1
@@ -79,7 +79,7 @@ app.layout = html.Div([
         ),
     
         # Graph 1
-        html.Label('Scatter Plot /n (click data to add country to right graph)', style={"text-align":"center"}),
+        html.Label('Scatter Plot (click data to add country to right graph)', style={"text-align":"center"}),
         dcc.Graph(id='indicator-graphic_1',
         #hoverData={'points': [{'customdata': 'Spain'}]}, <- remainder of old code (can be easily redeployed if needed)
         clickData={'points': [{'customdata': 'Spain'}]}),
@@ -107,10 +107,10 @@ app.layout = html.Div([
    
     ),
     
-    # Div container to create a space between the two graphs
+    # Div to create a space between the two graphs
     html.Div([],style={'width': '4%', 'display': 'inline-block'}),
     
-    # Div container for graph 2
+    # Div for graph 2
     html.Div
     ([
         #Dropdown Menu for country indicator of graph 2
